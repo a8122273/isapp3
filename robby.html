@@ -24,7 +24,7 @@
 
         async function createRoom() {
             var name = document.getElementById('roomname').value;
-            var sql = `insert into Rooms (name) values('${name}');`;
+            var sql = `insert into Rooms (topic,turn, roomname) values('0','0','${name}');`;
             var roomId = await osql.connectInsert(sql);
             console.log(roomId);
 
@@ -40,14 +40,15 @@
             for (var i = 0; i < objects.length; i++) {
                 html = html + '<tr>';
                 var object = objects[i];
-                html = html + `<td>${object.id}</td>`;
-                html = html + `<td>${object.name}</td>`;
-                html = html + `<td><a href="room.html?roomId=${object.id}">入室</a></td>`;
+                html = html + `<td>${object.roomid}</td>`;
+                html = html + `<td>${object.roomname}</td>`;
+                html = html + `<td><a href="room.html?roomid=${object.roomid}">入室</a></td>`;
                 html = html + '</tr>';
             }
             html = html + '</table>';
             document.getElementById('rooms').innerHTML = html;
         }
+
 
     </script>
 
