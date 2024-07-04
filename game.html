@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/osql.js"></script>
+
+    <script>
+        osql.requireLogin();//すべてのページに入れる．google認証をして，osql.connect()や，osql.getMe()を使えるようにしてくれる．
+        var me;
+        var roomid = osql.getParam('roomid');
+
+        $(document).ready(async function () {
+            me = await osql.getMe();
+            //var sql = `select * from Answers where userid = '${me.id}';`;
+        });
+
+        async function newAnswer() {
+            var answer = document.getElementById('answer').value;
+            var sql = `select * from Participation where userid = '${me.id}' and roomid =${roomid};`;
+            var participations = await osql.connect(sql);
+            var participation = participations[0];
+            console.log(participation);
+            var sql2 = `insert into Answers (pid,content) values(${participation.id},'${answer}');`;
+            await osql.connect(sql2);
+        }
+
+
+    </script>
+
+</head>
+
+<body>
+    <h1>
+        <p id="welcome">game</span>
+    </h1>
+    <div style="text-align: right;">
+        ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+        <a href="index.html">top</a>
+    </div>
+    <hr>
+    <div>
+        <p>回答を入力</p>
+        <input id="answer" type="text">
+        <button onclick="newAnswer()">登録</button>
+    </div>
+    <br>
+    <div id=""></div>
+</body>
+
+</html>
