@@ -40,12 +40,14 @@
 
             var sql2 = `select * from Users inner join Participation on Users.userid = Participation.userid where roomid = ${roomId};`;
             var objects = await osql.connect(sql2);
+            var html = '';
+            html = html + '<ul>';
             for (var i = 0; i < objects.length; i++) {
-
-                document.getElementById('comments').innerHTML = objects[i].lname + 'は' + objects[i].orders + '番目です';
-
+                var object = objects[i];
+                html = html + `<li>${objects[i].lname} は ${objects[i].orders}番目です</li>`;
             }
-
+            html = html + '</ul>';
+            document.getElementById('comments').innerHTML = html;
 
             var sql5 = `select * from Rooms where roomid = ${roomId};`;
             var objects5 = await osql.connect(sql5);
@@ -103,6 +105,7 @@
         <p>お題を登録してください</p>
         <input id="comment" type="text">
         <button onclick="newComment()">登録</button>
+        <button onclick="Nextbutton()">次へ</button>
     </div>
     <br>
     <div id="comments"></div>
