@@ -26,49 +26,65 @@
             console.log(count_list);
             count = parseInt(count_list[0]['count(roomid)']);
             count += 1;
+            var sql4 = `select userid from Participation where userid = '${me.id}';`;
+            var userid_sql = await osql.connect(sql4);
+            console.log(userid_sql);
+            if (userid_sql[0] == null) {
+                var sql = `insert into Participation (userid, roomid, orders)values('${me.id}', '${roomId}', '${count}');`;
+                await osql.connect(sql);
+                console.log("i");
+            }
 
-            var sql = `insert ignore into Participation (userid, roomid, orders)values('${me.id}', '${roomId}', '${count}');`;
-            await osql.connect(sql);
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
 
-            var sql2 = `select * from Rooms where roomid = ${roomId};`;
+            var sql2 = `select * from Users inner join Participation on Users.userid = Participation.userid where roomid = ${roomId};`;
             var objects = await osql.connect(sql2);
+            for (var i = 0; i < objects.length; i++) {
 
-            var room = objects[0];
-            document.getElementById('roomname').innerHTML = room.roomname;
+                document.getElementById('comments').innerHTML = objects[i].lname + 'は' + objects[i].orders + '番目です';
 
-            await refreshComments();
-            setInterval(refreshComments, 2000);
+            }
+
+
+            var sql5 = `select * from Rooms where roomid = ${roomId};`;
+            var objects5 = await osql.connect(sql5);
+            var room = objects5[0];
+            document.getElementById('welcome').innerHTML = room.roomname;
+            console.log(room.roomname);
+            console.log(room);
+
+            // await refreshComments();
+            // setInterval(refreshComments, 2000);
         });
 
-        async function newComment() {
-            var name = document.getElementById('comment').value;
-            var sql = `insert into Comments (roomId, userId, comment, time) values(${roomId}, '${me.id}','${comment}', now());`;
-            var commentId = await osql.connectInsert(sql);
-            console.log(commentId);
+        // async function newComment() {
+        //     var name = document.getElementById('comment').value;
+        //     var sql = `insert into Comments (roomId, userId, comment, time) values(${roomId}, '${me.id}','${comment}', now());`;
+        //     var commentId = await osql.connectInsert(sql);
+        //     console.log(commentId);
 
-            await refreshComments();
-        }
+        //     await refreshComments();
+        // }
 
-        async function refreshComments() {
-            var sql = `select * from Comments where roomId = ${roomId} order by time desc limit 10;`;
-            var objects = await osql.connect(sql);
-            console.log(objects);
-            var html = '';
-            html = html + '<table border="1">';
-            for (var i = 0; i < objects.length; i++) {
-                html = html + '<tr>';
-                var object = objects[i];
-                html = html + `<td>${object.id}</td>`;
-                html = html + `<td>${object.time}</td>`;
-                html = html + `<td>${object.userId}</td>`;
-                html = html + `<td>${object.comment}</td>`;
-                html = html + '</tr>';
-            }
-            html = html + '</table>';
-            document.getElementById('comments').innerHTML = html;
-        }
+        // async function refreshComments() {
+        //     var sql = `select * from Comments where roomId = ${roomId} order by time desc limit 10;`;
+        //     var objects = await osql.connect(sql);
+        //     console.log(objects);
+        //     var html = '';
+        //     html = html + '<table border="1">';
+        //     for (var i = 0; i < objects.length; i++) {
+        //         html = html + '<tr>';
+        //         var object = objects[i];
+        //         html = html + `<td>${object.id}</td>`;
+        //         html = html + `<td>${object.time}</td>`;
+        //         html = html + `<td>${object.userId}</td>`;
+        //         html = html + `<td>${object.comment}</td>`;
+        //         html = html + '</tr>';
+        //     }
+        //     html = html + '</table>';
+        //     document.getElementById('comments').innerHTML = html;
+        // }
 
     </script>
 
