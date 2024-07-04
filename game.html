@@ -44,6 +44,8 @@
             var participations = await osql.connect(sql3);
             var participation = participations[0];
             var amari = Number(room.turn) % participations2.length + 1;
+            console.log(amari);
+            console.log(participation.orders);
             if (Number(participation.orders) == amari) {
                 document.getElementById('myturn').innerHTML = "あなたのターンです";
                 document.getElementById('register').disabled = false;
