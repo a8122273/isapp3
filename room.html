@@ -38,18 +38,6 @@
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
 
-            var sql2 = `select * from  Participation  where roomid = ${roomId};`;
-            var objects = await osql.connect(sql2);
-            console.log(objects);
-            var html = '';
-            html = html + '<ul>';
-            for (var i = 0; i < objects.length; i++) {
-                var object = objects[i];
-                html = html + `<li>${objects[i].userid} は ${objects[i].orders}番目です</li>`;
-            }
-            html = html + '</ul>';
-            document.getElementById('members').innerHTML = html;
-
             var sql5 = `select * from Rooms where roomid = ${roomId};`;
             var objects5 = await osql.connect(sql5);
             var room = objects5[0];
@@ -60,17 +48,20 @@
             await refreshmember();
             setInterval(refreshmember, 2000);
         });
-        function refreshmember() {
+
+        async function refreshmember() {
             var sql2 = `select * from  Participation  where roomid = ${roomId};`;
-            var objects = osql.connect(sql2);
+            var objects = await osql.connect(sql2);
             console.log(objects);
             var html = '';
             html = html + '<ul>';
             for (var i = 0; i < objects.length; i++) {
                 var object = objects[i];
-                html = html + `<li>${objects[i].userid} は ${objects[i].orders}番目です</li>`;
+                console.log(object);
+                html = html + `<li>${object.userid} は ${object.orders}番目です</li>`;
             }
             html = html + '</ul>';
+            console.log(html);
             document.getElementById('members').innerHTML = html;
         }
 
