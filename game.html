@@ -40,7 +40,7 @@
             var sql4 = `select * from Participation where roomid = '${roomid}';`;
             var participations2 = await osql.connect(sql4);
 
-            var sql3 = `select * from Participation where userid = '${me.id}';`;
+            var sql3 = `select * from Participation where userid = '${me.id}' and roomid = '${roomid}';`;
             var participations = await osql.connect(sql3);
             var participation = participations[0];
             var amari = Number(room.turn) % participations2.length + 1;
