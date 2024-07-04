@@ -57,9 +57,23 @@
             //console.log(room.roomname);
             //console.log(room);
 
-            // await refreshComments();
-            // setInterval(refreshComments, 2000);
+            await refreshmember();
+            setInterval(refreshmember, 2000);
         });
+        function refreshmember() {
+            var sql2 = `select * from  Participation  where roomid = ${roomId};`;
+            var objects = osql.connect(sql2);
+            console.log(objects);
+            var html = '';
+            html = html + '<ul>';
+            for (var i = 0; i < objects.length; i++) {
+                var object = objects[i];
+                html = html + `<li>${objects[i].userid} は ${objects[i].orders}番目です</li>`;
+            }
+            html = html + '</ul>';
+            document.getElementById('members').innerHTML = html;
+        }
+
         function Nextbutton() {
 
         }
