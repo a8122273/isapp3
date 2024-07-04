@@ -13,61 +13,65 @@
         var me;
         var count = 0;
         var roomId = osql.getParam('roomid');
-        console.log(roomId);
+        //console.log(roomId);
         var roomName = osql.getParam('roomname');
 
 
 
         $(document).ready(async function () {
             me = await osql.getMe();
-            console.log(me);
+            //console.log(me);
             var sql3 = `select count(roomid) from Participation  where roomid = '${roomId}';`;
             var count_list = await osql.connect(sql3);
-            console.log(count_list);
+            //console.log(count_list);
             count = parseInt(count_list[0]['count(roomid)']);
             count += 1;
-            var sql4 = `select userid from Participation where userid = '${me.id}';`;
+            var sql4 = `select userid from Participation where userid = '${me.id}'and roomid = '${roomId}';`;
             var userid_sql = await osql.connect(sql4);
-            console.log(userid_sql);
+            //console.log(userid_sql);
             if (userid_sql[0] == null) {
                 var sql = `insert into Participation (userid, roomid, orders)values('${me.id}', '${roomId}', '${count}');`;
                 await osql.connect(sql);
-                console.log("i");
+                //console.log("i");
             }
 
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
 
-            var sql2 = `select * from Users inner join Participation on Users.userid = Participation.userid where roomid = ${roomId};`;
+            var sql2 = `select * from  Participation  where roomid = ${roomId};`;
             var objects = await osql.connect(sql2);
+            console.log(objects);
             var html = '';
             html = html + '<ul>';
             for (var i = 0; i < objects.length; i++) {
                 var object = objects[i];
-                html = html + `<li>${objects[i].lname} は ${objects[i].orders}番目です</li>`;
+                html = html + `<li>${objects[i].userid} は ${objects[i].orders}番目です</li>`;
             }
             html = html + '</ul>';
-            document.getElementById('comments').innerHTML = html;
+            document.getElementById('members').innerHTML = html;
 
             var sql5 = `select * from Rooms where roomid = ${roomId};`;
             var objects5 = await osql.connect(sql5);
             var room = objects5[0];
             document.getElementById('welcome').innerHTML = room.roomname;
-            console.log(room.roomname);
-            console.log(room);
+            //console.log(room.roomname);
+            //console.log(room);
 
             // await refreshComments();
             // setInterval(refreshComments, 2000);
         });
+        function Nextbutton() {
 
-        // async function newComment() {
-        //     var name = document.getElementById('comment').value;
-        //     var sql = `insert into Comments (roomId, userId, comment, time) values(${roomId}, '${me.id}','${comment}', now());`;
-        //     var commentId = await osql.connectInsert(sql);
-        //     console.log(commentId);
+        }
 
-        //     await refreshComments();
-        // }
+        async function newComment() {
+            var name = document.getElementById('comment').value;
+            var sql = `upsert into Rooms values()`;
+            var commentId = await osql.connectInsert(sql);
+            console.log(commentId);
+
+            await refreshComments();
+        }
 
         // async function refreshComments() {
         //     var sql = `select * from Comments where roomId = ${roomId} order by time desc limit 10;`;
@@ -108,7 +112,7 @@
         <button onclick="Nextbutton()">次へ</button>
     </div>
     <br>
-    <div id="comments"></div>
+    <div id="members"></div>
 </body>
 
 </html>
