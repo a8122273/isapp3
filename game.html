@@ -37,6 +37,16 @@
             var rooms = await osql.connect(sql2);
             var room = rooms[0];
             document.getElementById('turn').innerHTML = `ターン:${room.turn}`;
+            var sql3 = `select * from Participation where userid = '${me.id}';`;
+            var participations = await osql.connect(sql3);
+            var participation = participations[0];
+            var amari = Number(room.turn) % 2 + 1;
+            if (participation.orders == amari) {
+                document.getElementById('myturn').innerHTML = "あなたのターンです";
+            }
+            else {
+                document.getElementById('myturn').innerHTML = "相手のターンです";
+            }
         }
         async function newAnswer() {
             var answer = document.getElementById('answer').value;
@@ -66,7 +76,7 @@
     <p id='turn'></p>
     <hr>
     <div>
-        <p>回答を入力</p>
+        <p id="myturn">回答を入力</p>
         <input id="answer" type="text">
         <button onclick="newAnswer()">登録</button>
     </div>
