@@ -33,6 +33,10 @@
             }
             html = html + '</table>';
             document.getElementById('answers').innerHTML = html;
+            var sql2 = `select * from Rooms where roomid = ${roomid};`;
+            var rooms = await osql.connect(sql2);
+            var room = rooms[0];
+            document.getElementById('turn').innerHTML = `ターン:${room.turn}`;
         }
         async function newAnswer() {
             var answer = document.getElementById('answer').value;
@@ -40,7 +44,9 @@
             var participations = await osql.connect(sql);
             var participation = participations[0];
             console.log(participation);
-            var sql2 = `insert into Answers (pid,content) values(${participation.id},'${answer}');`;
+            var sql2 = `insert into Answers (pid,turn,content) values(${participation.id},0,'${answer}');`;
+            var sql3 = `update Rooms set turn = turn + 1 where roomid = ${roomid};`;
+            await osql.connect(sql3);
             await osql.connect(sql2);
         }
 
@@ -57,6 +63,7 @@
         ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
         <a href="index.html">top</a>
     </div>
+    <p id='turn'></p>
     <hr>
     <div>
         <p>回答を入力</p>
