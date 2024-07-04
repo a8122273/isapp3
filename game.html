@@ -46,9 +46,11 @@
             var amari = Number(room.turn) % participations2.length + 1;
             if (participation.orders == amari) {
                 document.getElementById('myturn').innerHTML = "あなたのターンです";
+                document.getElementById('register').disabled = false;
             }
             else {
                 document.getElementById('myturn').innerHTML = "相手のターンです";
+                document.getElementById('register').disabled = true;
             }
         }
         async function newAnswer() {
@@ -81,7 +83,7 @@
     <div>
         <p id="myturn">回答を入力</p>
         <input id="answer" type="text">
-        <button onclick="newAnswer()">登録</button>
+        <button id="register" onclick="newAnswer()">登録</button>
     </div>
     <br>
     <div id="answers"></div>
