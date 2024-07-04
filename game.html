@@ -15,9 +15,25 @@
 
         $(document).ready(async function () {
             me = await osql.getMe();
-            //var sql = `select * from Answers where userid = '${me.id}';`;
+            await refreshanswers();
+            setInterval(refreshanswers, 2000);
         });
 
+        async function refreshanswers() {
+            var sql = `select * from Answers inner join Participation on Answers.pid = Participation.id where roomid = ${roomid};`;
+            var answers = await osql.connect(sql);
+            var html = '';
+            html = html + '<table border="1">';
+            for (var i = 0; i < answers.length; i++) {
+                html = html + '<tr>';
+                var answer = answers[i];
+                html = html + `<td>${answer.userid}</td>`;
+                html = html + `<td>${answer.content}</td>`;
+                html = html + '</tr>';
+            }
+            html = html + '</table>';
+            document.getElementById('answers').innerHTML = html;
+        }
         async function newAnswer() {
             var answer = document.getElementById('answer').value;
             var sql = `select * from Participation where userid = '${me.id}' and roomid =${roomid};`;
@@ -48,7 +64,7 @@
         <button onclick="newAnswer()">登録</button>
     </div>
     <br>
-    <div id=""></div>
+    <div id="answers"></div>
 </body>
 
 </html>
